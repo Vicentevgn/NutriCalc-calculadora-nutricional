@@ -5,4 +5,5 @@ const routes = Router();
 
 routes.use("/auth", authRoutes);
 
+
 export { routes };

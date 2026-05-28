@@ -4,29 +4,43 @@ import { RecipeService } from "../services/recipe.service";
 export class RecipeController {
     static async create(req: Request, res: Response) {
         try {
-            const { name } = req.body;
+            const { name, userId, totalWeight } = req.body;
 
-            const recipe = await RecipeService.create(name);
-            return res.json(recipe);
+            const recipe = await RecipeService.create(
+                String(name),
+                String(userId),
+                Number(totalWeight)
+            );
+
+            return res.status(201).json(recipe);
         } catch (error) {
-            return res.status(500).json({ error: "Erro ao criar receita" });
+            console.error(error);
+
+            return res.status(500).json({
+                error: "Erro ao criar receita",
+            });
         }
     }
 
     static async addIngredient(req: Request, res: Response) {
         try {
-            const id = String(req.params.id);
-            const { ingredientId, grams } = req.body;
+            const recipeId = String(req.params.id);
+
+            const { ingredientId, quantity } = req.body;
 
             const result = await RecipeService.addIngredient(
-                id,
+                recipeId,
                 String(ingredientId),
-                Number(grams)
+                Number(quantity)
             );
 
-            return res.json(result);
+            return res.status(201).json(result);
         } catch (error) {
-            return res.status(500).json({ error: "Erro ao adicionar ingrediente" });
+            console.error(error);
+
+            return res.status(500).json({
+                error: "Erro ao adicionar ingrediente",
+            });
         }
     }
 
@@ -35,9 +49,20 @@ export class RecipeController {
             const id = String(req.params.id);
 
             const recipe = await RecipeService.findById(id);
+
+            if (!recipe) {
+                return res.status(404).json({
+                    error: "Receita não encontrada",
+                });
+            }
+
             return res.json(recipe);
         } catch (error) {
-            return res.status(500).json({ error: "Erro ao buscar receita" });
+            console.error(error);
+
+            return res.status(500).json({
+                error: "Erro ao buscar receita",
+            });
         }
     }
 
@@ -46,9 +71,30 @@ export class RecipeController {
             const id = String(req.params.id);
 
             const result = await RecipeService.getNutrition(id);
+
             return res.json(result);
         } catch (error) {
-            return res.status(500).json({ error: "Erro ao calcular nutrição" });
+            console.error(error);
+
+            return res.status(500).json({
+                error: "Erro ao calcular nutrição",
+            });
+        }
+    }
+
+    static async listByUser(req: Request, res: Response) {
+        try {
+            const userId = String(req.params.userId);
+
+            const recipes = await RecipeService.listByUser(userId);
+
+            return res.json(recipes);
+        } catch (error) {
+            console.error(error);
+
+            return res.status(500).json({
+                error: "Erro ao listar receitas",
+            });
         }
     }
 }

@@ -26,7 +26,10 @@ model Ingredient {
   calories      Float
   carbohydrates Float
   proteins      Float
-  fats          Float
+  totalFats     Float
+  saturatedFats Float @default(0)
+  totalSugars   Float @default(0)
+  addedSugars   Float @default(0)
   fiber         Float
   sodium        Float
 
