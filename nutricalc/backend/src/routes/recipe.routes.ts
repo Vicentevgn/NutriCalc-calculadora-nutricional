@@ -1,16 +1,17 @@
 import { Router } from "express";
 import { RecipeController } from "../controllers/recipe.controller";
+import {authMiddleware} from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/", RecipeController.create);
+router.post("/", authMiddleware, RecipeController.create);
 
-router.post("/:id/ingredients", RecipeController.addIngredient);
+router.post("/:id/ingredients", authMiddleware, RecipeController.addIngredient);
 
-router.get("/user/:userId", RecipeController.listByUser);
+router.get("/", authMiddleware, RecipeController.list)
 
-router.get("/:id/nutrition", RecipeController.getNutrition);
+router.get("/:id/nutrition", authMiddleware, RecipeController.getNutrition);
 
-router.get("/:id", RecipeController.findById);
+router.get("/:id", authMiddleware, RecipeController.findById);
 
 export default router;

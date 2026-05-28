@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { RecipeService } from "../services/recipe.service";
 
+interface AuthRequest extends Request {
+    userId: string;
+}
+
 export class RecipeController {
     static async create(req: Request, res: Response) {
         try {
@@ -82,16 +86,14 @@ export class RecipeController {
         }
     }
 
-    static async listByUser(req: Request, res: Response) {
+    static async list(req: AuthRequest, res: Response) {
         try {
-            const userId = String(req.params.userId);
+            const userId = req.userId;
 
             const recipes = await RecipeService.listByUser(userId);
 
             return res.json(recipes);
         } catch (error) {
-            console.error(error);
-
             return res.status(500).json({
                 error: "Erro ao listar receitas",
             });
